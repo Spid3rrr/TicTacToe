@@ -34,3 +34,25 @@
     transform: rotate(360deg);
   }
 }
+
+.title{
+  height: 170px;
+  top: 0;
+}
+
+.gameButton{
+    height: 75px;
+    width: 150px;
+    font-size: 30px;
+    background: aliceblue;
+    color: black;
+    border: none;
+    transition-duration: 0.4s;
+    margin: 20px;
+}
+
+
+.gameButton:hover {
+  background: black;
+  color: white;
+}

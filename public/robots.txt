@@ -1,3 +1,4 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
 Disallow:
+Thanks for checking, robot ! That is... if you're really a robot.... Hmmmmm

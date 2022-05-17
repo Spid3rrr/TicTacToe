@@ -5,7 +5,7 @@ class Cell extends React.Component{
 
         // Check if move is legal
         checkLegalMove = () => {
-            if(this.props.text==='') {
+            if(this.props.text===' ') {
                 return true;
             }
             return false;
@@ -13,17 +13,27 @@ class Cell extends React.Component{
 
         // Send move to server
         sendMove = () => {
-            const requestOptions = {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({cell:this.props.index, deez:"nuts"  })
-            };
-            fetch('http://127.0.0.1:5000/tictactoe', requestOptions)
-                .then(response => response.json())
-                .then(data => {
-                    window.grid.updateBoard(data);
-                } );
-                //this.props.ref.current.updateBoard(data));
+            if(window.grid.props.game_id){
+                const requestOptions = {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json',"Access-Control-Allow-Origin":"*"},
+                    body: JSON.stringify({move:this.props.index, id:window.grid.props.game_id  })
+                };
+                console.log(window.grid);
+                fetch('https://tic-tac-toe-api-spid3rrr.vercel.app/tictactoe', requestOptions)
+                    .then(response => response.json())
+                    .then(data => {
+                        window.grid.updateBoard(data['board']);
+                        if(data['winner']) {
+                            // end game
+                            window.grid.endGame(data['board']);
+                            // log winner
+                            console.log(data['winner']);
+                            window.winner.updateWinner(data['winner'] + " wins !",true);
+                        }
+                    } );
+                    //this.props.ref.current.updateBoard(data));
+            }
         }
 
         render(){
@@ -31,7 +41,7 @@ class Cell extends React.Component{
             <button
                 className={"cell cell-"+ this.props.index}
                 onClick={() => {
-                        if(this.checkLegalMove()) {
+                        if(this.checkLegalMove() && window.grid.state.playing) {
                             this.sendMove();
                         };
                 }}
@@ -45,7 +55,8 @@ class Cell extends React.Component{
 
 class Grid extends React.Component{
     state = {
-        board: ''
+        board: '         ',
+        playing:true
     }
     constructor(){
         super();
@@ -53,52 +64,38 @@ class Grid extends React.Component{
     }
     updateBoard = (data) => {
         this.setState({
-            board:data["board"]
+            board:data,
+            playing:true
         });
-        this.render();
+    }
+    endGame = (data) => {
+        this.setState({
+            board:data,
+            playing:false
+        });
     }
 
     render(){
         return (
             <div className="grid">
                 <div className="row">
-                    <Cell index={0} text={this.state.board[0]||''} />
-                    <Cell index={1} text={this.state.board[1]||''} />
-                    <Cell index={2} text={this.state.board[2]||''} />
+                    <Cell index={0} text={this.state.board[0]} />
+                    <Cell index={1} text={this.state.board[1]} />
+                    <Cell index={2} text={this.state.board[2]} />
                 </div>
                 <div className="row">
-                    <Cell index={3} text={this.state.board[3]||''} />
-                    <Cell index={4} text={this.state.board[4]||''} />
-                    <Cell index={5} text={this.state.board[5]||''} />
+                    <Cell index={3} text={this.state.board[3]} />
+                    <Cell index={4} text={this.state.board[4]} />
+                    <Cell index={5} text={this.state.board[5]} />
                 </div>
                 <div className="row">
-                    <Cell index={6} text={this.state.board[6]||''} />
-                    <Cell index={7} text={this.state.board[7]||''} />
-                    <Cell index={8} text={this.state.board[8]||''} />
+                    <Cell index={6} text={this.state.board[6]} />
+                    <Cell index={7} text={this.state.board[7]} />
+                    <Cell index={8} text={this.state.board[8]} />
                 </div>
             </div>
         )
     }
 }
-
-// function Grid() {
-//   return <div className="grid">
-//     <div className="row">
-//         <Cell index={0}/>
-//         <Cell index={1}/>
-//         <Cell index={2}/>
-//     </div>
-//     <div className="row">
-//         <Cell index={3}/>
-//         <Cell index={4}/>
-//         <Cell index={5}/>
-//     </div>
-//     <div className="row">
-//         <Cell index={6}/>
-//         <Cell index={7}/>
-//         <Cell index={8}/>
-//     </div>
-//   </div>
-// }
 
 export default Grid;
