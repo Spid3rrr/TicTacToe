@@ -2,13 +2,10 @@ import './Grid.css';
 import React from 'react';
 
 class Cell extends React.Component{
-        state = {
-            waiting : false
-        }
         // Check if move is legal
         checkLegalMove = () => {
             if(this.props.text===' ') {
-                return true && !this.state.waiting;
+                return true && !window.grid.state.waiting;
             }
             return false;
         }
@@ -16,15 +13,12 @@ class Cell extends React.Component{
         // Send move to server
         sendMove = () => {
             if(window.grid.props.game_id){
-                this.setState({
-                    waiting:true
-                })
+                window.grid.waitBoard()
                 const requestOptions = {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json',"Access-Control-Allow-Origin":"*"},
                     body: JSON.stringify({move:this.props.index, id:window.grid.props.game_id  })
                 };
-                console.log(window.grid);
                 fetch('https://tic-tac-toe-api-spid3rrr.vercel.app/tictactoe', requestOptions)
                     .then(response => response.json())
                     .then(data => {
@@ -36,9 +30,8 @@ class Cell extends React.Component{
                             console.log(data['winner']);
                             window.winner.updateWinner(data['winner'] + " wins !",true);
                         }
-                        this.setState({
-                            waiting:false
-                        })
+                        window.grid.readyBoard();
+
                     } );
                     //this.props.ref.current.updateBoard(data));
             }
@@ -64,7 +57,8 @@ class Cell extends React.Component{
 class Grid extends React.Component{
     state = {
         board: '         ',
-        playing:true
+        playing:true,
+        waiting:false
     }
     constructor(){
         super();
@@ -80,6 +74,20 @@ class Grid extends React.Component{
         this.setState({
             board:data,
             playing:false
+        });
+    }
+    waitBoard = () => {
+        this.setState({
+            board:this.state.board,
+            playing:this.state.playing,
+            waiting:true
+        });
+    }
+    readyBoard = () => {
+        this.setState({
+            board:this.state.board,
+            playing:this.state.playing,
+            waiting:false
         });
     }
 
