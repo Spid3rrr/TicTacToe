@@ -2,11 +2,13 @@ import './Grid.css';
 import React from 'react';
 
 class Cell extends React.Component{
-
+        state = {
+            waiting : false
+        }
         // Check if move is legal
         checkLegalMove = () => {
             if(this.props.text===' ') {
-                return true;
+                return true && !this.state.waiting;
             }
             return false;
         }
@@ -14,6 +16,9 @@ class Cell extends React.Component{
         // Send move to server
         sendMove = () => {
             if(window.grid.props.game_id){
+                this.setState({
+                    waiting:true
+                })
                 const requestOptions = {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json',"Access-Control-Allow-Origin":"*"},
@@ -31,6 +36,9 @@ class Cell extends React.Component{
                             console.log(data['winner']);
                             window.winner.updateWinner(data['winner'] + " wins !",true);
                         }
+                        this.setState({
+                            waiting:false
+                        })
                     } );
                     //this.props.ref.current.updateBoard(data));
             }

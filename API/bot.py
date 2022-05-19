@@ -97,7 +97,15 @@ def bestMove(brd):
   # if center is open, mark center
   if(brd[4]==" "):
     return 4
-  
+  # prevent triangle formations
+  if(brd[3]+brd[6]+brd[7]=="X X"):
+    return 6
+  if(brd[5]+brd[8]+brd[7]=="X X"):
+    return 8
+  if(brd[3]+brd[0]+brd[1]=="X X"):
+    return 0
+  if(brd[1]+brd[2]+brd[5]=="X X"):
+    return 2
   # if corners are open, mark corners 
   corners = {0,2,6,8}
   edges = {1,3,5,7}
