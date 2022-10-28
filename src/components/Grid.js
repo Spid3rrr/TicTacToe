@@ -1,40 +1,23 @@
 import './Grid.css';
 import React from 'react';
+import {handleMove} from './GameController.js'
 
 class Cell extends React.Component{
         // Check if move is legal
         checkLegalMove = () => {
-            if(this.props.text===' ') {
-                return true && !window.grid.state.waiting;
-            }
-            return false;
+            return this.props.text===' ';
         }
 
-        // Send move to server
+        // Send move to GameController
         sendMove = () => {
-            if(window.grid.props.game_id){
-                window.grid.waitBoard()
-                const requestOptions = {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json',"Access-Control-Allow-Origin":"*"},
-                    body: JSON.stringify({move:this.props.index, id:window.grid.props.game_id  })
-                };
-                fetch('https://tic-tac-toe-api-spid3rrr.vercel.app/tictactoe', requestOptions)
-                    .then(response => response.json())
-                    .then(data => {
-                        window.grid.updateBoard(data['board']);
-                        if(data['winner']) {
-                            // end game
-                            window.grid.endGame(data['board']);
-                            // log winner
-                            console.log(data['winner']);
-                            window.winner.updateWinner(data['winner'] + " wins !",true);
-                        }
-                        window.grid.readyBoard();
-
-                    } );
-                    //this.props.ref.current.updateBoard(data));
-            }
+                let data = JSON.parse(handleMove(this.props.index));
+                window.grid.updateBoard(data['board']);
+                if(data['winner']) {
+                    // end game
+                    window.grid.endGame(data['board']);
+                    // log winner
+                    window.winner.updateWinner(data['winner'] + " wins !",true);
+                }
         }
 
         render(){
@@ -58,7 +41,6 @@ class Grid extends React.Component{
     state = {
         board: '         ',
         playing:true,
-        waiting:false
     }
     constructor(){
         super();
@@ -74,20 +56,6 @@ class Grid extends React.Component{
         this.setState({
             board:data,
             playing:false
-        });
-    }
-    waitBoard = () => {
-        this.setState({
-            board:this.state.board,
-            playing:this.state.playing,
-            waiting:true
-        });
-    }
-    readyBoard = () => {
-        this.setState({
-            board:this.state.board,
-            playing:this.state.playing,
-            waiting:false
         });
     }
 

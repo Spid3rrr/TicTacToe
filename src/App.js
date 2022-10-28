@@ -3,6 +3,7 @@ import Game from './components/Game.js'
 import React from 'react';
 import Winner from './components/Winner.js'
 import titleimg from './assets/title.png';
+import {reset} from './components/GameController.js';
 
 
 class App extends React.Component{
@@ -24,6 +25,7 @@ class App extends React.Component{
           else {
             this.setState({playing:false,
               button_text:"New Game"});
+            reset();
             window.winner.updateWinner('Come defeat this "stupid" bot at tic tac toe ! *evil laugh*',false);
           }
         }}
