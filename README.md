@@ -4,4 +4,5 @@ This project was created with React and Flask to provide the most frusturating e
 
 ## Contents
 
-You can check out the front-end code in the React scripts, or the python code for the back-end inside the API folder ! Please reach out if you want any clarification on the code !
+You can check out the front-end code in the React scripts, or the Game Controller for the bot code ! Please reach out if you want any clarification on the code !
+The bot used to run on a Python Flask server, but since Heroku shutdown I transfered the logic to Javascript inside React.
