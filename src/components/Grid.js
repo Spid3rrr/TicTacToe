@@ -57,6 +57,7 @@ class Grid extends React.Component{
             board:data,
             playing:false
         });
+        window.app.changeButtonText("Try Again");
     }
 
     render(){

@@ -1,5 +1,5 @@
 import './App.css';
-import Game from './components/Game.js'
+import Grid from './components/Grid.js'
 import React from 'react';
 import Winner from './components/Winner.js'
 import titleimg from './assets/title.png';
@@ -10,6 +10,16 @@ class App extends React.Component{
   state = {
     playing: false,
     button_text:"New Game"
+  }
+  constructor(){
+    super();
+    window.app = this;
+  }
+  changeButtonText = (data) => {
+    this.setState({
+      button_text:data,
+      playing:true
+  });
   }
   render(){
     return (
@@ -32,7 +42,7 @@ class App extends React.Component{
     > {this.state.button_text} 
     </button>
     <div>
-    {this.state.playing===true && <Game/>}
+    {this.state.playing===true && <Grid/>}
     </div>
     </div>
     );
